@@ -13,6 +13,8 @@ class Game {
     this.width = width;
     this.board = [];
     this.currPlayer = 1;
+    // this.makeboard();
+    // this.makeHtmlboard();
   }
 
   /** makethis.board: create in-JS this.board structure:
@@ -51,7 +53,7 @@ class Game {
         row.append(cell);
       }
 
-      board.append(row);
+      board.append(row); // playable spaces
     }
   }
 
@@ -147,11 +149,10 @@ class Game {
 }
 
 new Game(6, 7);   // assuming constructor takes height, width
+// start game button will build board by creating a new instance of Game when clicked
+  // will need to grab ID board, assign innerHTML = '' to children to erase playable board from HTML
+  // THEN create board
 
-
-// we'll need these to actually play the game
-// makeboard();
-// makeHtmlboard();
 
 
 
