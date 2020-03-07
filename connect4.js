@@ -13,8 +13,12 @@ class Game {
     this.width = width;
     this.board = [];
     this.currPlayer = 1;
-    // this.makeboard();
-    // this.makeHtmlboard();
+
+    // this.playerOne = new Player(color1);
+    // this.playerTwo = new Player(color2);
+
+    this.makeboard();
+    this.makeHtmlboard();
   }
 
   /** makethis.board: create in-JS this.board structure:
@@ -33,7 +37,7 @@ class Game {
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', this.handleClick);
+    top.addEventListener('click', this.handleClick.bind(this));
 
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement('td');
@@ -80,6 +84,7 @@ class Game {
 
   /** endGame: announce game end */
   endGame(msg) {
+    this.lockBoard();
     alert(msg);
   }
 
@@ -89,7 +94,7 @@ class Game {
     const x = +evt.target.id;
 
     // get next spot in column (if none, ignore click)
-    const y = this.findSpotForCol(x);
+    const y = this.findSpotForCol.call(this, x);
     if (y === null) {
       return;
     }
@@ -114,11 +119,14 @@ class Game {
   /** checkForWin: check this.board cell-by-cell for "does a win start here?" */
 
   checkForWin() {
+    console.log(this);
+    //let instanceHeight = this.height;
+
     function _win(cells) {
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
-
+      console.log(this) // should be Game
       return cells.every(
         ([y, x]) =>
           y >= 0 &&
@@ -139,20 +147,47 @@ class Game {
         const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+        console.log(this);
+        if (_win.call(this,horiz) || _win.call(this, vert) || _win.call(this, diagDR) || _win.call(this, diagDL)) {
           return true;
         }
       }
     }
   }
 
+  lockBoard(){
+    // console.log(this)
+    // document.getElementById('column-top').removeEventListener("click", this.handleClick.bind(this));
+    // console.log(this)
+    this.height = 0;
+  }
+
 }
 
-new Game(6, 7);   // assuming constructor takes height, width
-// start game button will build board by creating a new instance of Game when clicked
+class Player {
+  constructor (color, num) {
+    this.color = color;
+    this.player = num;
+  }
+}
+
+// event listenrs for color inputs
+// global var color1 and color2
+
+
+
+
+
+document.getElementById('newGame').addEventListener('click', createNewGame);
+
+function createNewGame(){
+  // start game button will build board by creating a new instance of Game when clicked
   // will need to grab ID board, assign innerHTML = '' to children to erase playable board from HTML
   // THEN create board
-
+  let board = document.getElementById('board');
+  board.innerHTML = '';
+  new Game(6, 7); 
+}
 
 
 
